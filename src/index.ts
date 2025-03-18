@@ -762,7 +762,13 @@ class MantleClient {
           body: JSON.stringify(body),
         }),
       });
+
+      if (response.status >= 500) {
+        throw new MantleInternalServerError();
+      }
+
       const result = await response.json();
+      
       return result;
     } catch (e: any) {
       console.error(`[mantleRequest] ${path} error: ${e.message}`);
@@ -995,9 +1001,17 @@ class MantleClient {
   }
 }
 
+class MantleInternalServerError extends Error {
+  constructor(message = '') {
+    super(message);
+    this.name = "MantleInternalServerError";
+  }
+}
+
 export {
   MantleClient,
   SubscriptionConfirmType,
+  MantleInternalServerError,
   type Customer,
   type Plan,
   type Subscription,
