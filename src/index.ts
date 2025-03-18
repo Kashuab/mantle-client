@@ -764,11 +764,11 @@ class MantleClient {
       });
 
       if (response.status >= 500) {
-        throw new MantleInternalServerError();
+        throw new MantleInternalServerError(response.status);
       }
 
       const result = await response.json();
-      
+
       return result;
     } catch (e: any) {
       console.error(`[mantleRequest] ${path} error: ${e.message}`);
@@ -1002,8 +1002,8 @@ class MantleClient {
 }
 
 class MantleInternalServerError extends Error {
-  constructor(message = '') {
-    super(message);
+  constructor(statusCode: number) {
+    super(`The Mantle API responded with a ${statusCode} status code`);
     this.name = "MantleInternalServerError";
   }
 }
